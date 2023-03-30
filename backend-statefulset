@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: backend-statefulset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  serviceName: backend-service
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: my-backend-image:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: backend-storage
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: backend-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 10Gi
